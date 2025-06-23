@@ -8,7 +8,7 @@ theme:
 plugins:
   - search
   - blog
-  # - awesome-nav
+  - awesome-nav
 nav:
   - Home: index.md
   - Blog:
