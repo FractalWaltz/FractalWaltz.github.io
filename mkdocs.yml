@@ -1,15 +1,61 @@
 site_name: 分形圆舞曲
 site_url: https://FractalWaltz.github.io/
+# repo_url: https://github.com/FractalWaltz/FractalWaltz.github.io
+# repo_name: FractalWaltz.github.io
+copyright: Copyright &copy; 2025 ~ infinite FractalWaltz
 theme:
   name: material
+  language: zh
   features:
     - navigation.tabs
+    - navigation.prune
+    - navigation.indexes
     - navigation.top
+    - content.code.copy
+  palette:
+    primary: teal
+  # favicon: images/favicon.ico
+  # logo: images/favicon.ico
+  logo: images/favicon.svg
 plugins:
   - search
-  - blog
-  - awesome-nav
+  - blog:
+      blog_dir: 博客
+      blog_toc: true
+      post_excerpt: required
+  - awesome-nav:
+      # filename: .nav.yml
 nav:
   - Home: index.md
-  - Blog:
-      - blog/index.md
+  # - Blog:
+  #     - 博客/index.md
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/FractalWaltz
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
