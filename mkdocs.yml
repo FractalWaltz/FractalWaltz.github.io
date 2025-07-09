@@ -14,9 +14,9 @@ theme:
     - content.code.copy
   palette:
     primary: teal
-  # favicon: images/favicon.ico
+  favicon: images/fav.svg
   # logo: images/favicon.ico
-  logo: images/favicon.svg
+  logo: images/logo.svg
 plugins:
   - search
   - blog:
