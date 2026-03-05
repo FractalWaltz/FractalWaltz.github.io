@@ -47,6 +47,17 @@ jobs:
       - name: Build MkDocs site
         run: mkdocs build
 
+      - name: Test SSH connection
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            echo "SSH connection successful"
+            ls -ld ${{ secrets.VPS_TARGET_PATH }}
+
       # 将 site/ 目录通过 SCP 传输到 VPS
       - name: Deploy to VPS via SCP
         uses: appleboy/scp-action@v0.1.7
