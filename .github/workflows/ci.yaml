@@ -1,30 +1,65 @@
 name: ci
+
 on:
   push:
     branches:
       - master
       - main
+
 permissions:
   contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Configure Git Credentials
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure Git Credentials (for gh-deploy)
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: actions/setup-python@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - uses: actions/cache@v4
+
+      - name: Set cache ID
+        run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
         with:
           key: mkdocs-material-${{ env.cache_id }}
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install mkdocs-material
-      - run: pip install mkdocs-awesome-nav
-      - run: mkdocs gh-deploy --force
+
+      - name: Install dependencies
+        run: |
+          pip install mkdocs-material
+          pip install mkdocs-awesome-nav
+
+      # ===== 新增部分开始 =====
+      # 显式构建网站，生成 site/ 目录
+      - name: Build MkDocs site
+        run: mkdocs build
+
+      # 将 site/ 目录通过 SCP 传输到 VPS
+      - name: Deploy to VPS via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          source: "site/"
+          target: ${{ secrets.VPS_TARGET_PATH }}
+          strip_components: 1   # 去掉 site/ 前缀，直接把里面的文件放进目标目录
+      # ===== 新增部分结束 =====
+
+      # 原有的部署到 GitHub Pages（会再次构建，但没关系）
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force
